@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style type="text/css">
+    *{
+        padding: 0;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+html,body{
+    height: 100%;
+    overflow: hidden;
+}
+    ul,li{
+        list-style: none
+    }
+    #content{
+        
+    }
+
+    </style>
+</head>
+<body>
+    <div id="content">
+        <canvas></canvas>
+    </div>
+
+</body>
+</html>
+<script type="text/javascript">
+window.onload=function()
+{
+    var canvas=document.getElementsByTagName("canvas")[0];
+    var content=document.getElementById("content");
+    var wW=document.body.clientWidth;
+    var wH=document.body.clientHeight;
+    canvas.width=wW;
+    canvas.height=wH;
+    content.style.height=wH+"px";
+    var ctx=canvas.getContext("2d");
+    ctx.beginPath();
+    ctx.fillRect(0,0,wW,wH);
+    ctx.fillStyle="#122";
+    if(!ctx)
+    {
+        canvas.innerHTML="您的浏览器不支持canvas,请升级或更换浏览器"
+    }
+    //随机颜色获取
+    function ranCol()
+    {
+        var col_sum = parseInt("ffffff",16);
+        var ran_col = parseInt((Math.random()*col_sum)).toString(16);
+        if(ran_col.length<6)
+        {
+            ran_col="0"+ran_col;
+        }
+        return "#"+ran_col;
+    }
+    function Star(){}
+    Star.prototype={
+        data:function()
+        {
+            var canW=canvas.width;
+            var canH=canvas.height;
+            this.size=Math.ceil(Math.random()*1+1);
+            this.color=ranCol();
+            this.x=Math.ceil(Math.random()*canW);
+            this.y=Math.ceil(Math.random()*canH);
+            this.centerX=parseInt(canvas.width/2);
+            this.centerY=parseInt(canvas.height/2);
+            this.timer=null;
+            return this;
+        },
+        ersear:function()
+        {
+            var _this=this;
+            ctx.save();
+            ctx.beginPath();
+            ctx.fillStyle="#122";
+            ctx.arc(_this.x,_this.y,_this.size+2,0,360,false);
+            ctx.stroke();
+        },
+        draw:function()
+        {
+            var _this=this;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(_this.x,_this.y,_this.size,0,360),false;
+            ctx.fillStyle=this.color;
+            ctx.fill();
+            ctx.restore();
+        },
+        init:function()
+        {
+            var _this=this;
+            _this.data();
+            _this.draw();
+            return this;
+        },
+        gather:function()
+        {           
+            var _this=this;
+            _this.init();
+            _this.timer=setInterval(function(){
+                 _this.ersear();
+                if( _this.x> _this.centerX){
+                     _this.x--;
+                }
+                else if( _this.x< _this.centerX){
+                     _this.x++;
+                    }
+                if( _this.y> _this.centerY)
+                {
+                     _this.y--;
+                }
+                else if( _this.y< _this.centerY){
+                     _this.y++;
+                    }
+                if((_this.y== _this.centerY) && (_this.x== _this.centerX))
+                {
+                    clearInterval(_this.timer);
+                }
+                _this.draw();               
+            },42)               
+        }
+    };
+    //创建
+    var star=[];
+    for(var i=0;i<300;i++)
+    {
+        star[i]=new Star();
+        star[i].gather();
+    }
+    
+}
+</script>
